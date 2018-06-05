@@ -7,6 +7,7 @@ import { Component } from '@stencil/core';
 })
 export class AppHome {
 
+
   render() {
     return (
       <div class='app-home'>
@@ -20,6 +21,21 @@ export class AppHome {
         <stencil-route-link url='/profile/stencil'>
           <button>
             Profile page
+          </button>
+        </stencil-route-link>
+        <stencil-route-link url='/add'>
+          <button>
+            Add Numbers
+          </button>
+        </stencil-route-link>
+        <stencil-route-link url='/universe'>
+          <button>
+            Draw Universe
+          </button>
+        </stencil-route-link>
+        <stencil-route-link url='/gameoflife'>
+          <button>
+            Play Game of Life
           </button>
         </stencil-route-link>
       </div>

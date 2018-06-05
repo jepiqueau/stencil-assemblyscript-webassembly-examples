@@ -13,9 +13,12 @@ declare global {
   }
   namespace JSXElements {}
 
+  interface HTMLElement {
+    componentOnReady?: () => Promise<this | null>;
+  }
+
   interface HTMLStencilElement extends HTMLElement {
     componentOnReady(): Promise<this>;
-    componentOnReady(done: (ele?: this) => void): void;
 
     forceUpdate(): void;
   }
@@ -24,10 +27,77 @@ declare global {
 }
 
 import '@stencil/router';
+import '@stencil/state-tunnel';
 
 import {
   MatchResults,
 } from '@stencil/router';
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppAdd {
+
+    }
+  }
+
+  interface HTMLAppAddElement extends StencilComponents.AppAdd, HTMLStencilElement {}
+
+  var HTMLAppAddElement: {
+    prototype: HTMLAppAddElement;
+    new (): HTMLAppAddElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-add': HTMLAppAddElement;
+  }
+  interface ElementTagNameMap {
+    'app-add': HTMLAppAddElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-add': JSXElements.AppAddAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppAddAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppGameoflife {
+
+    }
+  }
+
+  interface HTMLAppGameoflifeElement extends StencilComponents.AppGameoflife, HTMLStencilElement {}
+
+  var HTMLAppGameoflifeElement: {
+    prototype: HTMLAppGameoflifeElement;
+    new (): HTMLAppGameoflifeElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-gameoflife': HTMLAppGameoflifeElement;
+  }
+  interface ElementTagNameMap {
+    'app-gameoflife': HTMLAppGameoflifeElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-gameoflife': JSXElements.AppGameoflifeAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppGameoflifeAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
 
 declare global {
 
@@ -122,6 +192,39 @@ declare global {
   }
   namespace JSXElements {
     export interface AppRootAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
+    interface AppUniverse {
+
+    }
+  }
+
+  interface HTMLAppUniverseElement extends StencilComponents.AppUniverse, HTMLStencilElement {}
+
+  var HTMLAppUniverseElement: {
+    prototype: HTMLAppUniverseElement;
+    new (): HTMLAppUniverseElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-universe': HTMLAppUniverseElement;
+  }
+  interface ElementTagNameMap {
+    'app-universe': HTMLAppUniverseElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-universe': JSXElements.AppUniverseAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppUniverseAttributes extends HTMLAttributes {
 
     }
   }

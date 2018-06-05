@@ -1,8 +1,8 @@
 {
-  "name": "@stencil/starter",
+  "name": "stencil-webassembly-examples",
   "private": true,
   "version": "0.0.1",
-  "description": "Stencil App Starter",
+  "description": "Stencil Webassembly Examples",
   "files": [
     "dist/"
   ],
@@ -15,29 +15,34 @@
     "test.watch": "jest --watch"
   },
   "dependencies": {
-    "@stencil/core": "^0.9.4",
+    "@stencil/core": "^0.9.6",
     "@stencil/router": "latest"
   },
   "devDependencies": {
     "@stencil/dev-server": "latest",
     "@stencil/utils": "latest",
     "@types/jest": "^21.1.1",
-    "jest": "^21.2.1"
+    "@types/webassembly-js-api": "0.0.1",
+    "jest": "^21.2.1",
+    "jest-fetch-mock": "^1.6.2"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ionic-team/stencil-app-starter.git"
+    "url": "git+https://github.com/jepiqueau/stencil-webassembly-examples.git"
   },
-  "author": "Ionic Team",
+  "author": "Jean Pierre Quéau",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ionic-team/stencil"
+    "url": "https://github.com/jepiqueau/stencil-webassembly-examples/issues"
   },
-  "homepage": "https://github.com/ionic-team/stencil",
+  "homepage": "https://github.com/jepiqueau/stencil-webassembly-examples#readme",
   "jest": {
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
     },
+    "setupFiles": [
+      "./setupJest.js"
+    ],
     "testRegex": "(/__tests__/.*|\\.(test|spec))\\.(tsx?|jsx?)$",
     "moduleFileExtensions": [
       "ts",
