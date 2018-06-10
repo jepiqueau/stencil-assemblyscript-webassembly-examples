@@ -1,5 +1,8 @@
 exports.config = {
-  globalStyle: 'src/global/app.css'
+  globalStyle: 'src/global/app.css',
+  copy: [
+    { src: 'wasm' }
+  ]
 };
 
 exports.devServer = {

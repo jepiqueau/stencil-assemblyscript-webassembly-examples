@@ -1,4 +1,5 @@
 import { Component, Element, State } from '@stencil/core';
+import { initWasm } from '../../utils/wasminit';
 
 
 @Component({
@@ -9,7 +10,9 @@ export class AppUniverse {
 
     @Element() el:HTMLElement;
     @State() wSize: any;
-    @State() pause: boolean = false;
+    @State() update:boolean = false;
+    @State() rdCanvas: boolean = false;
+    @State() toggle:boolean = false;
     cnvEl: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     bcr: ClientRect;
@@ -17,26 +20,46 @@ export class AppUniverse {
     planets: Array<any> = [];
     width: number;
     height: number;
+    asMod: any;
+    mem: Float64Array;
+    tOutRef: NodeJS.Timer;
+    cmpLoaded: Boolean; 
 
     componentWillLoad() {
-        this.pause = false;
+      const impObj:any = {
+        env: {
+          abort: function(msg, file, line, column) {
+            console.log('msg ', msg)
+            console.error("abort called at " + file + ":" + line + ":" + column);
+          }
+        }
+      }
+      initWasm('wasm/n-body-systems.wasm',impObj).then((result) => {
+        this.asMod = result.instance.exports;
+        this.mem = new Float64Array(this.asMod.memory.buffer);
         this.init();
+        this.update = true;
+        this.cmpLoaded = true;
+      });
     }
+  
     componentDidUnload() {
         this.width = 0;
         this.height = 0;
-        this.pause = true;
+        this.mem = null;
+        this.cmpLoaded = false;
+        clearTimeout(this.tOutRef);
     }
     componentDidLoad() {
         this.cnvEl = this.el.querySelector("#canvas");
         this.ctx = this.cnvEl.getContext('2d');
-        // define planets
-        this.definePlanets();
-        this.renderCanvas();
-     }
+    }
     init() {
         this.wSize = this.windowSize(); 
         window.addEventListener('resize',this._debounce(this._windowResize,100,false),false);
+        // define planets
+        this.definePlanets();
+        this.asMod.init();
     }
     windowSize(): any {
          return {
@@ -47,9 +70,11 @@ export class AppUniverse {
          };
     }
     _windowResize(): void {
-         this.wSize = this.windowSize();
-         this.pause = true;
-         this.renderCanvas();
+        if(this.cmpLoaded) {
+            this.wSize = this.windowSize();
+            this.rdCanvas = false;
+            clearTimeout(this.tOutRef);
+        }
     }
     _debounce(func:Function,wait:number,immediate:boolean) {
          let timeout: NodeJS.Timer;
@@ -86,8 +111,47 @@ export class AppUniverse {
             { color: "#0f6ab0", r: Math.sqrt(3.88) }
         ];      
     }
-    renderCanvas() {
-       
+    updateSteps() {
+        if(this.width === 0 && this.height === 0 ) {
+            clearTimeout(this.tOutRef);
+            this.tOutRef = null;
+            return;
+        } else {
+            this.tOutRef = setTimeout(() => {
+                this.updateSteps();
+                this.asMod.bench(3);
+                this.toggle = ! this.toggle;
+            },1000/30); // Update about 30 times a second    
+        }
+    }
+    drawUniverse() {
+        let scale: number = Math.min(this.width,this.height) / 700;
+        let cx: number = this.width / 2;
+        let cy: number = this.height / 2;
+        this.ctx.clearRect(0, 0, this.width, this.height);
+        for (let i: number = 0, k = this.stars.length; i < k; ++i) {
+            let star = this.stars[i];
+            this.ctx.fillStyle = "#fff";
+            this.ctx.beginPath();
+            this.ctx.globalAlpha = 0.5 + 0.5 * Math.random();
+            this.ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
+            this.ctx.fill();
+        }
+        this.ctx.globalAlpha = 1.0;
+        for (let i = 0;; ++i) {
+            let body = this.asMod.getBody(i);
+            if (!body) break;
+            let ptr = body >>> 3;
+            let x = this.mem[ptr];
+            let y = this.mem[ptr + 1];
+            this.ctx.fillStyle = this.planets[i].color;
+            this.ctx.beginPath();
+            this.ctx.arc(cx + x * 10 * scale, cy + y * 10 * scale, 2 * this.planets[i].r * scale * 1.1, 0, 2 * Math.PI);
+            this.ctx.fill();
+        }
+    }
+
+    renderCanvas() {     
         // render Universe
         this.bcr = this.cnvEl.getBoundingClientRect();
         // Compute the size of the universe (here: 2px per cell)
@@ -100,64 +164,13 @@ export class AppUniverse {
         // Add some random stars because stars
         // define stars
         this.defineStars();
-
-        // Fetch and instantiate the module
-        fetch("assets/wasm/n-body-system.wasm")
-        .then(response => response.arrayBuffer())
-        .then(buffer => WebAssembly.instantiate(buffer, {
-            env: { abort: function() {} }
-        }))
-        .then(module => {
-            let exports:any = module.instance.exports;
-            let mem: Float64Array = new Float64Array(exports.memory.buffer);
-            let uni = this;
-            exports.init();
-
-            // Update about 30 times a second
-            (function update() {
-                setTimeout(update, 1000 / 30);
-                for (var i = 0; i < 3; ++i) exports.step();
-            })();
-            uni.pause = false;
-            // Keep rendering
-            (function render() {
-                if(uni.pause || (uni.width === 0 && uni.height === 0)) return;
-                requestAnimationFrame(render);
-                let scale: number = Math.min(uni.width,uni.height) / 700;
-                let cx: number = uni.width / 2;
-                let cy: number = uni.height / 2;
-                uni.ctx.clearRect(0, 0, uni.width, uni.height);
-                for (let i: number = 0, k = uni.stars.length; i < k; ++i) {
-                    let star = uni.stars[i];
-                    uni.ctx.fillStyle = "#fff";
-                    uni.ctx.beginPath();
-                    uni.ctx.globalAlpha = 0.5 + 0.5 * Math.random();
-                    uni.ctx.arc(star.x, star.y, star.r, 0, 2 * Math.PI);
-                    uni.ctx.fill();
-                }
-                uni.ctx.globalAlpha = 1.0;
-                for (let i = 0;; ++i) {
-                    let body = exports.getBody(i);
-                    if (!body) break;
-                    let ptr = body >>> 3;
-                    let x = mem[ptr];
-                    let y = mem[ptr + 1];
-                    //let z = mem[ptr + 2];
-                    //let m = mem[ptr + 6];
-                    uni.ctx.fillStyle = uni.planets[i].color;
-                    uni.ctx.beginPath();
-                    uni.ctx.arc(cx + x * 10 * scale, cy + y * 10 * scale, 2 * uni.planets[i].r * scale * 1.1, 0, 2 * Math.PI);
-                    uni.ctx.fill();
-                }
-            })();
-        }).catch(err => {
-            alert("Failed to load WASM: " + err.message + " (ad blocker, maybe?)");
-            console.log(err.stack);
-            this.pause = true;
-        });
-        
+        this.updateSteps();
+        this.rdCanvas = true;
     }
+
     render() {
+        if(this.update && !this.rdCanvas) this.renderCanvas();
+        if(this.update && this.rdCanvas) this.drawUniverse();
         return (
         <div id='universe'>
             <p id='p-title'>

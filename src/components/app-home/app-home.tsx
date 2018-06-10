@@ -28,6 +28,11 @@ export class AppHome {
             Add Numbers
           </button>
         </stencil-route-link>
+        <stencil-route-link url='/int-operators'>
+          <button>
+          Int Operators
+          </button>
+        </stencil-route-link>
         <stencil-route-link url='/universe'>
           <button>
             Draw Universe

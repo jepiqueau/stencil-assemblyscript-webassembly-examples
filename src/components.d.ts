@@ -135,6 +135,39 @@ declare global {
 declare global {
 
   namespace StencilComponents {
+    interface AppIntOperators {
+
+    }
+  }
+
+  interface HTMLAppIntOperatorsElement extends StencilComponents.AppIntOperators, HTMLStencilElement {}
+
+  var HTMLAppIntOperatorsElement: {
+    prototype: HTMLAppIntOperatorsElement;
+    new (): HTMLAppIntOperatorsElement;
+  };
+  interface HTMLElementTagNameMap {
+    'app-int-operators': HTMLAppIntOperatorsElement;
+  }
+  interface ElementTagNameMap {
+    'app-int-operators': HTMLAppIntOperatorsElement;
+  }
+  namespace JSX {
+    interface IntrinsicElements {
+      'app-int-operators': JSXElements.AppIntOperatorsAttributes;
+    }
+  }
+  namespace JSXElements {
+    export interface AppIntOperatorsAttributes extends HTMLAttributes {
+
+    }
+  }
+}
+
+
+declare global {
+
+  namespace StencilComponents {
     interface AppProfile {
       'match': MatchResults;
     }

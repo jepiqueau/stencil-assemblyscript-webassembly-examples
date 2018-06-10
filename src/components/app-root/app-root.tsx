@@ -23,6 +23,8 @@ export class AppRoot {
             </stencil-route>
             <stencil-route url='/add' component='app-add'>
             </stencil-route>
+            <stencil-route url='/int-operators' component='app-int-operators'>
+            </stencil-route>
             <stencil-route url='/universe' component='app-universe'>
             </stencil-route>
             <stencil-route url='/gameoflife' component='app-gameoflife'>

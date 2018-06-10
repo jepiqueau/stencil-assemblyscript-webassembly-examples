@@ -1,16 +1,20 @@
-# Stencil App using Webassembly
+# Stencil App using WebAssembly and AssemblyScript
 
-This Stencil App use a simple approach to use Webassembly without interfering with the compiling Stencil process. It is the result of curiosity and few days work to answer the following question " Can we integrate and use the WebAssembly technology inside Stencil? " which was posted in the Slack Stencil General Channel.
+This Stencil App demonstrates the use of Webassembly by integrating AssemblyScript in the compiling Stencil process.
+
 The approach taken consist of:
 
-- creating Webassembly .wasm files outside Stencil in WebAssembly Studio https://webassembly.studio/
-- include the .wasm files in your Stencil App as assets
+- creating Webassembly typescript files in an assembly project folder
+- compiling the WebAssembly typescript files to .wasm files stored in src/wasm folder
+- developping Stencil Web Components using the WebAssembly .wasm files
+- compiling Stencil Application
 
-WebAssembly Studio can create .wasm files from C, Rust and AssemblyScript (Typescript) Projects.
+if you wish to use WebAssembly written in C, C++ or Rust, you create them outside the project, compile them with Emscripten and store the .wasm files directly into the src/wasm folder. (see example add.wasm written in C).
 
 The application demonstrates the use of:
 
 - add integer number created in a c project and compile as add.wasm in WebAsembly Studio
+- integer operators (addition, substraction, multiplication, division)
 - n-body solar system taken from the AssemblyScript example https://github.com/AssemblyScript/assemblyscript/tree/master/examples/n-body
 - game of life taken also from the AssemblyScript example https://github.com/AssemblyScript/assemblyscript/tree/master/examples/game-of-life
 
@@ -42,6 +46,7 @@ function instantiateStreaming(source: Response | Promise<Response>, importObject
 
 Now, you are ready to run:
 ```bash
+npm run build-asc   // compile the assembly typescript files
 npm start
 ```
 
@@ -57,6 +62,7 @@ npm run dev
 To build the app for production, run:
 
 ```bash
+npm run build-asc   // compile the assembly typescript files
 npm run build
 ```
 

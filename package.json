@@ -1,12 +1,16 @@
 {
-  "name": "stencil-webassembly-examples",
+  "name": "stencil-assemblyscript-webassembly-examples",
   "private": true,
   "version": "0.0.1",
-  "description": "Stencil Webassembly Examples",
+  "description": "Stencil Webassembly Examples using AssemblyScript",
   "files": [
     "dist/"
   ],
   "scripts": {
+    "build-asc:int-operators": "asc assembly/int-operators/*.ts -b src/wasm/int-operators.wasm --validate -O3",
+    "build-asc:n-body-systems": "asc assembly/n-body-systems/*.ts -b src/wasm/n-body-systems.wasm --validate --noDebug --noAssert -O3",
+    "build-asc:game-of-life": "asc assembly/game-of-life/*.ts -b src/wasm/game-of-life.wasm --use Math=JSMath --importMemory --validate --noDebug --noAssert -O3",
+    "build-asc": "npm run build-asc:int-operators && npm run build-asc:n-body-systems && npm run build-asc:game-of-life",
     "build": "stencil build --prerender",
     "dev": "sd concurrent \"stencil build --dev --watch\" \"stencil-dev-server\" ",
     "serve": "stencil-dev-server",
@@ -23,19 +27,20 @@
     "@stencil/utils": "latest",
     "@types/jest": "^21.1.1",
     "@types/webassembly-js-api": "0.0.1",
+    "assemblyscript": "github:AssemblyScript/assemblyscript",
     "jest": "^21.2.1",
     "jest-fetch-mock": "^1.6.2"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jepiqueau/stencil-webassembly-examples.git"
+    "url": "git+https://github.com/jepiqueau/stencil-assemblyscript-webassembly-examples.git"
   },
   "author": "Jean Pierre Quéau",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/jepiqueau/stencil-webassembly-examples/issues"
+    "url": "https://github.com/jepiqueau/stencil-assemblyscript-webassembly-examples/issues"
   },
-  "homepage": "https://github.com/jepiqueau/stencil-webassembly-examples#readme",
+  "homepage": "https://github.com/jepiqueau/stencil-assemblyscript-webassembly-examples#readme",
   "jest": {
     "transform": {
       "^.+\\.(ts|tsx)$": "<rootDir>/node_modules/@stencil/core/testing/jest.preprocessor.js"
