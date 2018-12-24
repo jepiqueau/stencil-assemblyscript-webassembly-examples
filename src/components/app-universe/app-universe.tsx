@@ -4,7 +4,8 @@ import { initWasm } from '../../utils/wasminit';
 
 @Component({
   tag: 'app-universe',
-  styleUrl: 'app-universe.css'
+  styleUrl: 'app-universe.css',
+  shadow: true
 })
 export class AppUniverse {
 
@@ -51,7 +52,7 @@ export class AppUniverse {
         clearTimeout(this.tOutRef);
     }
     componentDidLoad() {
-        this.cnvEl = this.el.querySelector("#canvas");
+        this.cnvEl = this.el.shadowRoot.querySelector("#canvas");
         this.ctx = this.cnvEl.getContext('2d');
     }
     init() {

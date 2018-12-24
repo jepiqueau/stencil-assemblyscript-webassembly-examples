@@ -1,24 +1,23 @@
 // see: https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
-// Configuration imported from JS. On the WASM side, 32-bit color values are modified in ABGR order
-// (alpha, blue, green, red) because WASM is little endian. This results in RGBA in memory, which is
-// exactly what the image buffer, composed of 8-bit components, expects on the JS side.
-declare const BGR_ALIVE: u32;
-declare const BGR_DEAD: u32;
-declare const BIT_ROT: u32;
+// Configuration imported from JS
+import { BGR_ALIVE, BGR_DEAD, BIT_ROT } from "./config";
 
 var w: i32, h: i32, s: i32;
 
 /** Gets an input pixel in the range [0, s]. */
+@inline
 function get(x: u32, y: u32): u32 {
   return load<u32>((y * w + x) << 2);
 }
 
 /** Sets an output pixel in the range [s, 2*s]. */
+@inline
 function set(x: u32, y: u32, v: u32): void {
   store<u32>((s + y * w + x) << 2, v);
 }
 
 /** Sets an output pixel in the range [s, 2*s] while fading it out. */
+@inline
 function rot(x: u32, y: u32, v: u32): void {
   var a = max<i32>((v >>> 24) - BIT_ROT, 0);
   set(x, y, (a << 24) | (v & 0x00ffffff));

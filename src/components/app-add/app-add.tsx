@@ -4,7 +4,8 @@ import { initWasm } from '../../utils/wasminit';
 
 @Component({
   tag: 'app-add',
-  styleUrl: 'app-add.css'
+  styleUrl: 'app-add.css',
+  shadow: true
 })
 export class AppAdd {
 
@@ -29,7 +30,7 @@ export class AppAdd {
     });
   }
   async addNumber(a:number, b:number) {
-    let addEl:HTMLDivElement = this.el.querySelector("#add");
+    let addEl:HTMLDivElement = this.el.shadowRoot.querySelector("#add");
     addEl.innerText = "Result: " + this.asMod.add(a, b);
   
   }

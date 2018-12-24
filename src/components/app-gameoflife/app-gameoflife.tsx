@@ -7,7 +7,8 @@ const BIT_ROT   = 10;
 
 @Component({
   tag: 'app-gameoflife',
-  styleUrl: 'app-gameoflife.css'
+  styleUrl: 'app-gameoflife.css',
+  shadow: true
 })
 export class AppGameoflife {
 
@@ -46,7 +47,7 @@ export class AppGameoflife {
         this.cmpLoaded = false;
     }
     componentDidLoad() {
-        this.cnvEl = this.el.querySelector("#canvas");
+        this.cnvEl = this.el.shadowRoot.querySelector("#canvas");
         this.ctx = this.cnvEl.getContext('2d');
         this.renderCanvas();
     }
@@ -129,22 +130,26 @@ export class AppGameoflife {
         let byteSize: number = (this.size + this.size) << 2; // input & output (here: 4b per cell)
         this.cnvEl.width = this.width;
         this.cnvEl.height = this.height;
+    
         this.ctx.imageSmoothingEnabled = false;
         // Compute the size of and instantiate the module's memory
         let memory: WebAssembly.Memory = new WebAssembly.Memory({ initial: ((byteSize + 0xffff) & ~0xffff) >>> 16 });
         // instantiate the module
         const impObj:any = {
             env: {
-                BGR_ALIVE : this.rgb2bgr(RGB_ALIVE) | 1, // little endian, LSB must be set
-                BGR_DEAD  : this.rgb2bgr(RGB_DEAD) & ~1, // little endian, LSB must not be set
-                BIT_ROT,
                 memory,
                 abort: function(msg, file, line, column) {
                     console.log('msg ', msg)
                     console.error("abort called at " + file + ":" + line + ":" + column);
                 }
             },
-            JSMath: Math
+            config: {
+                BGR_ALIVE : this.rgb2bgr(RGB_ALIVE) | 1, // little endian, LSB must be set
+                BGR_DEAD  : this.rgb2bgr(RGB_DEAD) & ~1, // little endian, LSB must not be set
+                BIT_ROT,
+
+            },
+            Math
         }
         let res:any = await initWasm('wasm/game-of-life.wasm',impObj);
         this.asMod = res.instance.exports;

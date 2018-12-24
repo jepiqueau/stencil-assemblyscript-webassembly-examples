@@ -3,7 +3,8 @@ import { Component } from '@stencil/core';
 
 @Component({
   tag: 'app-home',
-  styleUrl: 'app-home.css'
+  styleUrl: 'app-home.css',
+  shadow: true
 })
 export class AppHome {
 
@@ -19,27 +20,27 @@ export class AppHome {
         </p>
 
         <stencil-route-link url='/profile/stencil'>
-          <button>
+          <button id='profile-button'>
             Profile page
           </button>
         </stencil-route-link>
         <stencil-route-link url='/add'>
-          <button>
+          <button id='add-numbers-button'>
             Add Numbers
           </button>
         </stencil-route-link>
         <stencil-route-link url='/int-operators'>
-          <button>
+          <button id='int-operators-button'>
           Int Operators
           </button>
         </stencil-route-link>
         <stencil-route-link url='/universe'>
-          <button>
+          <button id='draw-universe-button'>
             Draw Universe
           </button>
         </stencil-route-link>
         <stencil-route-link url='/gameoflife'>
-          <button>
+          <button id='gameoflife-button'>
             Play Game of Life
           </button>
         </stencil-route-link>

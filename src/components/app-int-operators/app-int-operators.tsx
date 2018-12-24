@@ -4,7 +4,8 @@ import { initWasm } from '../../utils/wasminit';
 
 @Component({
   tag: 'app-int-operators',
-  styleUrl: 'app-int-operators.css'
+  styleUrl: 'app-int-operators.css',
+  shadow: true
 })
 export class AppIntOperators {
 
@@ -26,19 +27,19 @@ export class AppIntOperators {
     });
   }
   addNumber(a:number, b:number) {
-    let addEl:HTMLDivElement = this.el.querySelector("#add");
+    let addEl:HTMLDivElement = this.el.shadowRoot.querySelector("#add");
     addEl.innerText = "Addition Result: " + this.asMod.add(a, b);
   }
   substractNumber(a:number, b:number) {
-    let addEl:HTMLDivElement = this.el.querySelector("#substract");
+    let addEl:HTMLDivElement = this.el.shadowRoot.querySelector("#substract");
     addEl.innerText = "Substraction Result: " + this.asMod.substract(a, b);
   }
   multNumber(a:number, b:number) {
-    let addEl:HTMLDivElement = this.el.querySelector("#mult");
+    let addEl:HTMLDivElement = this.el.shadowRoot.querySelector("#mult");
     addEl.innerText = "Multiplication Result: " + this.asMod.mult(a, b);
   }
   divNumber(a:number, b:number) {
-    let addEl:HTMLDivElement = this.el.querySelector("#div");
+    let addEl:HTMLDivElement = this.el.shadowRoot.querySelector("#div");
     addEl.innerText = "Division Result: " + this.asMod.div(a, b);
   }
   intOperators() {
